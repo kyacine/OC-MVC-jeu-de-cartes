@@ -1,14 +1,26 @@
 """Entry point."""
 
 from controllers.base import Controller
+from controllers.evaluate import CheckerRankAndSuitIndex
+
 from models.deck import Deck
-from views.base import View
+
+from views.base import Views
+from views.broadcast import BroadcastView
+from views.internet import InternetStreamingView
+from views.player import PlayerView
 
 
 def main():
     deck = Deck()
-    view = View()
-    game = Controller(deck, view)
+
+    active_view = PlayerView()
+    passive_views = (active_view, BroadcastView(), InternetStreamingView())
+    views = Views(active_view, passive_views)
+
+    checker = CheckerRankAndSuitIndex()
+
+    game = Controller(deck, views, checker)
     game.run()
 
 if __name__ == '__main__':
